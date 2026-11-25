@@ -13,6 +13,7 @@ __pycache__/
 *.yaml
 *.yml
 *.md
+!README.md
 *.rst
 *.txt
 *.pdf
