@@ -14,6 +14,9 @@ __pycache__/
 *.yml
 *.md
 !README.md
+!rag_demo/knowledge_base/*.md
+!enterprise_rag_demo/knowledge_base/*.md
+!software_engineering_demo/sample_repo/docs/*.md
 *.rst
 *.txt
 *.pdf

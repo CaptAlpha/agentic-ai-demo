@@ -16,6 +16,5 @@ root_agent = Agent(
     name="research_agent",
     model="gemini-3.5-flash",
     description="A web research assistant",
-    instruction="Answer the user's question by conducting web research and providing relevant information, use get_google_search_results to fetch information from the web.",
-    tools=[get_google_search_results]
+    instruction="Answer the user's question by conducting web research and providing relevant information, use ",
 )

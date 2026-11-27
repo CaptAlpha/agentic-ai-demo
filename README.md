@@ -1,6 +1,6 @@
 # Agentic AI Demo
 
-Three small Python demos built with Google's Agent Development Kit (ADK) and Gemini. Each shows how an AI agent can use tools to gather information, perform calculations, and produce a useful response.
+Six Python demos built with Google's Agent Development Kit (ADK) and Gemini. Each shows how an AI agent can use tools to gather information, perform calculations, and produce a useful response.
 
 The examples progress from local document tools to web research and a stock research workflow that delegates news analysis to a second agent.
 
@@ -11,6 +11,15 @@ The examples progress from local document tools to web research and a stock rese
 | PDF and invoice analysis | Reads a local PDF and summarizes or calculates statistics from its contents | `pypdf`, `read_pdf`, `calculate_stats` |
 | Web research | Attempts to retrieve Google search results for a question | Custom `get_google_search_results` wrapper |
 | Stock research | Combines a market snapshot, period return, and recent company news | `yfinance`, Google Search, a delegated news agent |
+| [Agentic RAG](rag_demo/README.md) | Searches local policy documents, verifies context, and answers with source citations | Offline BM25 retrieval, document reading, Gemini |
+| [Enterprise RAG team](enterprise_rag_demo/README.md) | Plans a procurement comparison, runs specialists in parallel, calculates costs, reviews evidence, and revises a cited brief | Seven LLM agents, sequential/parallel workflows, RAG, shared state, calculation and citation tools |
+| [Software engineering team](software_engineering_demo/README.md) | Investigates a task-tracker bug, retrieves code/contracts, tests repair hypotheses, and reviews a patch | Parallel subagents, code RAG, real unittest runs, temporary repair experiments, code review |
+
+**For CS students:** start with the [CampusTasks debugging lab](software_engineering_demo/README.md). It includes a deliberately buggy Python service, a classroom walkthrough, and real before/after test results. Run `adk web` from `software_engineering_demo` and select `dev_team` after configuring Gemini credentials.
+
+For the full multi-agent demonstration, start with the [Enterprise RAG team guide](enterprise_rag_demo/README.md), which includes a presentation prompt, expected results, an architecture diagram, and follow-up scenarios.
+
+For a local knowledge-base assistant with sample documents, cross-document questions, and offline retrieval tests, see the [Agentic RAG demo](rag_demo/README.md). Run `adk web` from `rag_demo` and select `knowledge_agent` after configuring Gemini credentials. This demo also supports `RAG_MODEL` to select a model available to your account.
 
 These are learning examples. Dependencies are not pinned, and the repository does not currently include an automated test suite or deployment configuration. See [Known limitations](#known-limitations) before running the demos.
 
