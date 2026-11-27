@@ -44,7 +44,7 @@ For terminal chat, run this from `rag_demo` instead:
 adk run knowledge_agent
 ```
 
-## Suggested live demonstration
+## Practice questions
 
 1. **Simple retrieval:** “How much can I claim for home office equipment, and what approval do I need?” Expect INR 15,000 and manager approval before purchase, cited to `remote_work.md`.
 2. **Multiple sources:** “Can I claim a monitor and internet? Explain the separate allowances, receipt deadline, and payment timeline.” Look for searches covering both remote work and expense policies. Equipment is INR 15,000 once, internet is INR 1,000 monthly, claims are due in 30 calendar days, and payment follows Finance approval within 10 business days.
@@ -69,7 +69,7 @@ The retriever creates 20-line windows with four lines of overlap. It ranks passa
 
 ## Add your own knowledge
 
-Put UTF-8 `.md` or `.txt` documents inside `rag_demo/knowledge_base/`, including subdirectories. New and edited files are picked up on the next tool call. Remove the sample policies if they are irrelevant and update the agent's company-specific instructions.
+Put UTF-8 `.md` or `.txt` documents inside `rag_demo/knowledge_base/`, including subdirectories. New and edited files are picked up on the next tool call. Replace the sample policies and update the agent's company-specific instructions when adapting the demo to a new topic.
 
 Markdown files directly inside the sample knowledge directory are allowed by `.gitignore`. Other text files and nested Markdown files may need explicit ignore exceptions if you intend to commit them. Keep private documents out of public repositories.
 

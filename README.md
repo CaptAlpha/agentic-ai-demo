@@ -2,14 +2,14 @@
 
 Six Python demos built with Google's Agent Development Kit (ADK) and Gemini. Each shows how an AI agent can use tools to gather information, perform calculations, and produce a useful response.
 
-The examples progress from local document tools to web research and a stock research workflow that delegates news analysis to a second agent.
+The examples cover tool calling, subagent delegation, retrieval-augmented generation (RAG), parallel workflows, shared state, and test-driven debugging.
 
 ## Demos at a glance
 
 | Demo | What it does | Tools and data |
 | --- | --- | --- |
 | PDF and invoice analysis | Reads a local PDF and summarizes or calculates statistics from its contents | `pypdf`, `read_pdf`, `calculate_stats` |
-| Web research | Attempts to retrieve Google search results for a question | Custom `get_google_search_results` wrapper |
+| Web research | Basic research-agent definition for exploring ADK configuration | Gemini; search integration is incomplete |
 | Stock research | Combines a market snapshot, period return, and recent company news | `yfinance`, Google Search, a delegated news agent |
 | [Agentic RAG](rag_demo/README.md) | Searches local policy documents, verifies context, and answers with source citations | Offline BM25 retrieval, document reading, Gemini |
 | [Enterprise RAG team](enterprise_rag_demo/README.md) | Plans a procurement comparison, runs specialists in parallel, calculates costs, reviews evidence, and revises a cited brief | Seven LLM agents, sequential/parallel workflows, RAG, shared state, calculation and citation tools |
@@ -17,11 +17,7 @@ The examples progress from local document tools to web research and a stock rese
 
 **For CS students:** start with the [CampusTasks debugging lab](software_engineering_demo/README.md). It includes a deliberately buggy Python service, a classroom walkthrough, and real before/after test results. Run `adk web` from `software_engineering_demo` and select `dev_team` after configuring Gemini credentials.
 
-For the full multi-agent demonstration, start with the [Enterprise RAG team guide](enterprise_rag_demo/README.md), which includes a presentation prompt, expected results, an architecture diagram, and follow-up scenarios.
-
-For a local knowledge-base assistant with sample documents, cross-document questions, and offline retrieval tests, see the [Agentic RAG demo](rag_demo/README.md). Run `adk web` from `rag_demo` and select `knowledge_agent` after configuring Gemini credentials. This demo also supports `RAG_MODEL` to select a model available to your account.
-
-These are learning examples. Dependencies are not pinned, and the repository does not currently include an automated test suite or deployment configuration. See [Known limitations](#known-limitations) before running the demos.
+Each demo has its own examples and instructions. The RAG and software engineering demos also include offline tests.
 
 ## Repository structure
 
@@ -37,6 +33,9 @@ agentic-ai-demo/
 │   └── stock_researcher/
 │       ├── __init__.py
 │       └── agent.py             # Market tools and delegated news analysis
+├── rag_demo/                    # Local knowledge-base RAG
+├── enterprise_rag_demo/         # Procurement team with parallel specialists
+├── software_engineering_demo/   # Code RAG and regression-test experiments
 ├── .gitignore
 └── README.md
 ```
@@ -62,8 +61,6 @@ On Windows PowerShell, activate the environment with:
 .venv\Scripts\Activate.ps1
 ```
 
-The package list above is derived from the source imports; it is not a pinned, tested dependency set.
-
 ### 2. Configure Gemini access
 
 Create an API key in [Google AI Studio](https://aistudio.google.com/apikey). In the terminal where you will start ADK, set:
@@ -84,7 +81,7 @@ Alternatively, follow the [ADK Python quickstart](https://github.com/google/adk-
 
 ### 3. Check agent package entry files
 
-The stock demo already includes an `__init__.py` that imports its agent module. The invoice and research demos do not currently track this file. Before running those two demos, create an `__init__.py` in each agent folder with:
+Before running the invoice and research demos, ensure each agent folder contains an `__init__.py` with:
 
 ```python
 from . import agent
@@ -106,8 +103,11 @@ The source currently configures these model IDs:
 | PDF analysis | `gemini-3.5-flash` |
 | Web research | `gemini-3.5-flash` |
 | Stock researcher and news analyst | `gemini-3.5-flash-lite` |
+| Agentic RAG | `gemini-3.5-flash` (`RAG_MODEL`) |
+| Enterprise RAG team | `gemini-3.5-flash` (`ENTERPRISE_RAG_MODEL`) |
+| Software engineering team | `gemini-3.5-flash` (`SOFTWARE_DEMO_MODEL`) |
 
-Model availability depends on your API access. If a configured model is unavailable, update its ID in the corresponding `agent.py` to a model supported by your account and tools. The models are configured directly in code; there is no model environment-variable override in this repository.
+Model availability depends on your API access. If a configured model is unavailable, update its ID in the corresponding `agent.py` to a model supported by your account and tools. The invoice, research, and stock demos configure models directly in `agent.py`. The other demos support the environment-variable overrides listed above.
 
 ## Run a demo
 
@@ -118,6 +118,9 @@ Activate your environment and configure credentials first. Run each demo from it
 | PDF analysis | `cd invoice_demo` | `adk run invoice_agent` |
 | Web research | `cd research_demo` | `adk run researh_agent` |
 | Stock research | `cd stock_demo` | `adk run stock_researcher` |
+| Agentic RAG | `cd rag_demo` | `adk run knowledge_agent` |
+| Enterprise RAG team | `cd enterprise_rag_demo` | `adk run solution_team` |
+| Software engineering team | `cd software_engineering_demo` | `adk run dev_team` |
 
 Each directory command above starts from the repository root. To use the browser interface, run `adk web` in the selected demo directory instead, then open the URL printed in the terminal and select the agent. See the [ADK quickstart](https://github.com/google/adk-docs/blob/main/docs/get-started/python.md) for the CLI and web interface.
 
@@ -146,9 +149,7 @@ Example prompt:
 Research how AI agents use tools and summarize the main ideas with sources.
 ```
 
-The agent is instructed to call `get_google_search_results(query)`, which attempts to fetch five search results. Exceptions are returned as an error dictionary.
-
-**Compatibility caveat:** this wrapper calls `google_search.GoogleSearchTool().search(...)`. Its compatibility with your installed ADK release needs verification. If it returns an attribute or method error, adapt the wrapper to the supported search API or use the built-in `google_search` tool, as demonstrated by the stock demo's news analyst.
+The research demo currently defines an agent and a search helper, but the helper is not connected to the agent. As a practical exercise, complete the instructions and integrate a supported search tool. See the stock demo’s `news_analyst` for an example using the built-in `google_search` tool.
 
 ### Stock research
 
@@ -179,7 +180,7 @@ Use Yahoo Finance ticker symbols, such as `NVDA` or `TCS.NS`. Market data may be
 - **PDF extraction is text-based.** There is no OCR pipeline for scanned invoices. Complex tables may lose their layout during extraction.
 - **Number selection is model-driven.** The PDF tool does not parse invoice fields or distinguish line items from subtotals; the agent makes that selection before calculating statistics.
 - **Local PDF contents enter the model context.** Use documents appropriate for your configured model service.
-- **Search compatibility needs checking.** The standalone research demo uses a custom wrapper whose API calls may need adjustment for the installed ADK version.
+- **Web research is incomplete.** Connect a supported search tool before expecting web-grounded answers.
 - **External services are required.** Gemini calls, search, and stock data depend on network access, service availability, access permissions, and quotas.
 - **Results need review.** Missing financial fields can be returned as `None`, and a successful tool call does not guarantee a complete or accurate generated answer.
 
@@ -196,9 +197,25 @@ Use Yahoo Finance ticker symbols, such as `NVDA` or `TCS.NS`. Market data may be
 | PDF text is empty | Check whether the PDF is scanned or image-only; this demo does not perform OCR. |
 | Stock data is missing | Check the ticker symbol, exchange suffix, network access, and data-provider response. |
 
-## Extending the examples
+## Run the offline tests
 
-Possible next steps include pinning dependency versions, adding tests for the local tools, introducing OCR and structured invoice extraction, validating the research search integration, and making model selection configurable.
+From the repository root:
+
+```bash
+python3 -m unittest discover -s rag_demo/tests -v
+python3 -m unittest discover -s enterprise_rag_demo/tests -v
+python3 -m unittest discover -s software_engineering_demo/tests -v
+```
+
+These tests run without Gemini credentials. The software engineering lab checks intentionally failing fixture tests and successful repair experiments; run its lab suite above to verify expected behavior.
+
+## Practice exercises
+
+- Add OCR or structured field extraction to the invoice demo.
+- Connect a supported search tool to the research agent.
+- Add documents to the RAG knowledge base and inspect the retrieved citations.
+- Compare sequential and parallel specialist execution in the enterprise demo.
+- Add regression cases to the software engineering lab and evaluate the repair candidates.
 
 ## References
 

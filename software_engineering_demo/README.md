@@ -1,6 +1,6 @@
 # Software engineering agents — CampusTasks debugging lab
 
-A CS classroom demo of a small engineering team investigating and repairing a bug. Students submit an issue, watch agents retrieve source code and requirements, reproduce failures, compare repair hypotheses with real tests, and produce a reviewed patch proposal.
+A practical debugging lab using a team of AI agents. Submit an issue, inspect retrieved source code and requirements, reproduce failures, compare repair hypotheses with real tests, and examine a reviewed patch proposal.
 
 The example is an **in-memory Python task-list service**, representing the domain logic behind a task-tracker API. It has deliberately incorrect owner-scoped pagination and unstable ordering. No HTTP server, database, external code host, or deployment is needed.
 
@@ -30,7 +30,7 @@ show a reviewed minimal patch with actual test results. Explain the
 reasoning as if you are mentoring second-year CS students.
 ```
 
-## What students will see
+## Workflow
 
 1. A triage agent turns the bug report into an investigation brief.
 2. Three subagents work in parallel: requirements analysis, code investigation, and baseline test reproduction.
@@ -100,17 +100,15 @@ The tool returns the exact one-line unified diff that it tested. The existing fi
 
 **This is a controlled repair lab.** The four candidates are pre-authored, allowlisted transformations, not arbitrary agent-generated code. The model investigates, chooses experiments, interprets results, and reviews evidence. It does not have a general shell or file-write tool. No patch is applied to the real sample repository, keeping the exercise repeatable.
 
-## A 10-minute classroom walkthrough
+## Practical walkthrough
 
-1. **Ask for a prediction.** Show the issue report and ask whether filtering before or after pagination matters.
-2. **Submit the main prompt.** Open the ADK event trace and identify the three parallel specialists.
-3. **Inspect retrieval.** Open a `search_knowledge` response and follow its code or document citation.
-4. **Show a red test run.** The baseline tool returns real unittest failure output, not a simulated test status.
-5. **Compare hypotheses.** Ask students why each partial fix still fails.
-6. **Inspect the green candidate.** Compare the exact diff with the original function.
-7. **Discuss review.** Passing eight tests is evidence, not proof of complete correctness or deployment readiness.
-
-Generated wording and tool order can vary. Depending on ADK version, intermediate agent outputs may appear in chat as well as event traces.
+1. Read `sample_repo/docs/issue_42.md` and predict the cause of the incomplete pages.
+2. Submit the example prompt and inspect the three parallel specialists in the ADK event trace.
+3. Open a `search_knowledge` response and check its code or document citation.
+4. Inspect the baseline test output and identify the failing assertions.
+5. Compare the partial repairs and explain why each still fails.
+6. Compare the passing candidate's diff with the original function.
+7. Read the review and identify cases the existing tests do not cover.
 
 ## Follow-up prompts
 
@@ -192,4 +190,4 @@ That second command is expected to exit with failures. Keep the teaching fixture
 
 The seven-agent workflow makes multiple Gemini calls and can be slower or more costly than a single assistant. It has one independent review pass. Evidence and tool-use rules are prompt instructions, not formal correctness guarantees. No deployment, Git write, external issue creation, or actual pull request occurs.
 
-Possible student extensions include property-based pagination tests, maximum-page-size requirements, a FastAPI adapter, database-backed pagination, hybrid semantic retrieval, and a reviewed patch-application workflow. These are extension ideas, not capabilities implemented by this demo.
+Possible student extensions include property-based pagination tests, maximum-page-size requirements, a FastAPI adapter, database-backed pagination, hybrid semantic retrieval, and a reviewed patch-application workflow.

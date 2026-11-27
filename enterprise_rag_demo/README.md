@@ -19,9 +19,9 @@ adk web
 
 Select **solution_team** in the ADK web interface. Use a model available to your account; the environment variable above overrides the default. Terminal alternative: `adk run solution_team` from this directory.
 
-Install `google-adk` if needed, following the root README. Python 3.11 or newer is recommended. Retrieval and calculations use only the standard library; no vector database or embedding service is required. The existing local Python 3.9 environment can load the workflow but emits dependency support warnings, so use a supported environment for a fresh setup.
+Install `google-adk` if needed, following the root README. Python 3.11 or newer is recommended. Retrieval and calculations use only the standard library; no vector database or embedding service is required.
 
-## Main presentation prompt
+## Example request
 
 ```text
 We need a customer-support knowledge tool for 25 employees for 12 months.
@@ -79,16 +79,16 @@ Parallel specialists read the same plan and write different keys. They do not de
 
 The framework fixes stage order; each researcher chooses searches, query reformulations, and context reads within its stage. See the official [sequential workflow documentation](https://github.com/google/adk-docs/blob/main/docs/agents/workflow-agents/sequential-agents.md) and [multi-agent patterns](https://developers.googleblog.com/en/developers-guide-to-multi-agent-patterns-in-adk/) for the ADK mechanisms used here.
 
-## What to show in the web interface
+## Inspect the workflow
 
 1. Submit the main prompt and inspect events for each named agent.
-2. Expand `search_knowledge` calls: show retrieved passages, relevance scores, and line citations.
+2. Expand `search_knowledge` calls to inspect retrieved passages, relevance scores, and line citations.
 3. Inspect `calculate_quote`: financial totals come from code rather than model arithmetic.
 4. Compare the three specialist outputs and their state keys.
-5. Show the reviewer's `validate_citations` call and any source reads.
+5. Inspect the reviewer's `validate_citations` call and source reads.
 6. Compare the draft, review findings, and final brief.
 
-Depending on your ADK version, intermediate agent messages may appear in chat as well as event traces. This is useful for the demonstration. Exact tool sequences and generated wording vary.
+Depending on your ADK version, intermediate agent messages may appear in chat as well as event traces. Exact tool sequences and generated wording vary.
 
 ## Additional scenarios
 
@@ -159,4 +159,4 @@ Tests cover quote totals, minimum seats, budget boundaries, invalid inputs, cita
 - Search/read budgets and evidence rules are prompt instructions. There is no runtime retry loop, enforced approval, or automatic purchase action.
 - Missing evidence, malicious document instructions, citation support, and policy interpretation still need human review in a real application.
 - BM25 can miss paraphrases. A larger production system would need better indexing, access control, versioned evidence, evaluation, and potentially hybrid semantic retrieval.
-- Session state is for working context, not a persistent audit database. This demo does not claim production readiness or guaranteed factual accuracy.
+- Session state is for working context, not a persistent audit database.
